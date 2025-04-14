@@ -18,7 +18,6 @@ describe('CheckoutService', () => {
     }
   }
 
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
