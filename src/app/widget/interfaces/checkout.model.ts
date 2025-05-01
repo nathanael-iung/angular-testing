@@ -9,3 +9,13 @@ export interface iProdutosCarrinho {
   estoque: number;
   preco: iPrecoProduto;
 }
+
+export interface iRequestListarProdutos {
+  status: boolean;
+  produtos: iProdutosCarrinho[];
+}
+
+export interface iRequestAdicionarProduto {
+  status: boolean;
+  produto: iProdutosCarrinho;
+}
