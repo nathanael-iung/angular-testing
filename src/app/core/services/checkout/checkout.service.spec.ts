@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { CheckoutService } from './checkout.service';
-import { iProdutosCarrinho, iRequestAdicionarProduto } from "../../../widget/interfaces/checkout.model";
+import { iProdutosCarrinho } from "../../../widget/interfaces/checkout.model";
 import { UtilsService } from "../../../shared/services/utils/utils.service";
-import { HttpClientTestingModule, HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpErrorResponse } from "@angular/common/http";
 
 describe('CheckoutService', () => {
 
@@ -109,6 +110,22 @@ describe('CheckoutService', () => {
       request.flush({status: true, produto: produtoMock})
       expect(request.request.method).toEqual('POST')
       expect(request.request.body).toEqual({produto})
+    })
+    it('throws an error if the request fails', () => {
+      let errorResponse: HttpErrorResponse | undefined
+      checkoutService.buscarProdutosCarrinho().subscribe({
+        next: () => fail(),
+        error: (error: HttpErrorResponse) => errorResponse = error
+      })
+      const request = httpTestingController.expectOne('http://localhost:8001/produto/buscar')
+      request.flush('Server error', {
+        status: 422,
+        statusText: 'Unprocessable entity'
+      })
+      if(!errorResponse)
+        throw new Error("Error response is undefined")
+      expect(errorResponse.status).toEqual(422)
+      expect(errorResponse.statusText).toEqual('Unprocessable entity')
     })
   })
 
